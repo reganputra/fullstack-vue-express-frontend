@@ -7,7 +7,7 @@
 
   import api from "../../services/api.js";
 
-  //state user
+
   const user = reactive({
     name: '',
     email: '',
@@ -15,7 +15,7 @@
     password_confirmation: ''
   })
 
-  //state validation
+
   const validation = ref([])
 
   //method register
