@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 import Cookies from 'js-cookie';
 import api from '/src/service/api.js'
+import axios from "axios";
 
 
 const token = Cookies.get('token');
@@ -12,30 +13,54 @@ const user = reactive({
   name: '',
   email: '',
   password: '',
+  nationality: '',
 });
 const validation = ref([]);
 
-const storeUser = async () => {
+// const storeUser = async () => {
+//
+//   //call api store user
+//   api.defaults.headers.common['Authorization'] = token;
+//   await api.post('/admin/users', {
+//     name: user.name,
+//     email: user.email,
+//     password: user.password,
+//   })
+//       .then(() => {
+//         //redirect ke halaman users
+//         router.push({
+//           name: 'admin.users'
+//         })
+//       })
+//       .catch(error => {
+//
+//         validation.value = error.response.data
+//       })
+//
+// }
 
-  //call api store user
-  api.defaults.headers.common['Authorization'] = token;
-  await api.post('/admin/users', {
-    name: user.name,
-    email: user.email,
-    password: user.password,
-  })
-      .then(() => {
-        //redirect ke halaman users
-        router.push({
-          name: 'admin.users'
-        })
-      })
-      .catch(error => {
+  const storeUser = async () => {
+    try {
+      // prediksi nationality menggunakan AgeApi
+      const response = await axios.get(`https://api.nationalize.io/?name=${user.name}`);
+      const topCountry = response.data.country[0]?.country_id || 'Unknown';
+      user.nationality = topCountry;
 
-        validation.value = error.response.data
-      })
+      // kirim ke backend
+      api.defaults.headers.common['Authorization'] = token;
+      await api.post('/admin/users', {
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        nationality: user.nationality, // kirim ke backend
+      });
 
-}
+      router.push({ name: 'admin.users' });
+    } catch (error) {
+      validation.value = error.response.data;
+    }
+  }
+
 </script>
 
 <template>

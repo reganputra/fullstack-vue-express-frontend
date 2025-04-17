@@ -73,6 +73,7 @@ const handleCancelDelete = () => {
               <tr>
                 <th scope="col">Full Name</th>
                 <th scope="col">Email Address</th>
+                <th scope="col">Nationality</th>
                 <th scope="col" style="width:17%">Actions</th>
               </tr>
               </thead>
@@ -87,6 +88,7 @@ const handleCancelDelete = () => {
               <tr v-else v-for="(user, index) in users" :key="index">
                 <td>{{ user.name }}</td>
                 <td>{{ user.email }}</td>
+                <td>{{ user.nationality || '-' }}</td>
                 <td class="text-center">
                   <router-link :to="{ name: 'admin.users.edit', params: { id: user.id } }"
                                class="btn btn-sm btn-primary rounded-sm shadow border-0 me-2">EDIT</router-link>
